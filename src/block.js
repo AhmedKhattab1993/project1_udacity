@@ -21,6 +21,7 @@ class Block {
 		this.body = Buffer.from(JSON.stringify(data)).toString('hex');   // Will contain the transactions stored in the block, by default it will encode the data
 		this.time = 0;                                              // Timestamp for the Block creation
 		this.previousBlockHash = null;                              // Reference to the previous Block Hash
+        //this.owner = address;
     }
     
     /**
@@ -76,11 +77,11 @@ class Block {
         return new Promise((resolve, reject) => {
             if (self.height == 0)
             {
-                resolve(js_object)
+                resolve(null)
             }
             else
             {
-                reject("Not Valid")
+                resolve(js_object)
             }
         });
     }

@@ -127,9 +127,9 @@ class Blockchain {
                 let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
                 var diffMs = currentTime - tm 
                 bitcoinMessage.verify(message, address, signature)
-                if (diffMs < 300000)
+                if (diffMs < 300000) 
                 {
-                    let block = new BlockClass.Block({data: star});
+                    let block = new BlockClass.Block({star:star, owner:address});
                     await this._addBlock(block);
                     resolve(block)
                 }
@@ -190,15 +190,20 @@ class Blockchain {
      * @param {*} address 
      */
     getStarsByWalletAddress (address) {
+        console.log("getStarsByWalletAddress")
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => { 
-            console.log(self.chain.length); 
             self.chain.forEach((bItem) => { 
-                let data = bItem.getBData(); 
-                if(data && bItem.owner === address)
-                { stars.push(data); } }); 
-                resolve(stars); });
+                bItem.getBData().then((value) => {
+                    if (value && value.owner == address)
+                    {
+                        stars.push(value); 
+                    }
+                  });
+             }); 
+                resolve(stars); 
+            });
     }
 
     /**
@@ -213,12 +218,12 @@ class Blockchain {
         return new Promise(async (resolve, reject) => {
             self.chain.forEach(async(b) => {
                 if(b.height === 0){
-                      await  b.validate() ? true : errorLog.push("Genesis block does not validate")
-                    // errorLog.push("Genesis block does not validate")
+                    await b.validate() ? true : errorLog.push("Genesis block does not validate")
+                    errorLog.push("Genesis block does not validate")
 
                    }
                     else if( b.previousBlockHash === self.chain[b.height - 1].hash){
-                     await  b.validate() ? true : errorLog.push(new Error(b + " isn't validated")); 
+                    await b.validate() ? true : errorLog.push(new Error(b + " isn't validated")); 
                 } 
           
             });
