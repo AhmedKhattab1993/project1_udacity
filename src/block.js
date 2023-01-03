@@ -44,15 +44,23 @@ class Block {
             // Recalculate the hash of the Block
             // Comparing if the hashes changed
             // Returning the Block is not valid
-            var new_hash = SHA256(JSON.stringify(self.body)).toString();
+            var new_hash = SHA256(
+                JSON.stringify(
+                    {
+                        ...self,
+                        "hash": null
+                    }
+                )
+            ).toString();
+
             if (new_hash != hash)
             {
-                reject("Block is not valid")
+                reject(false)
             }
             // Returning the Block is valid
             else
             {
-                resolve("Block is valid")
+                resolve(true)
             }
         });
     }
